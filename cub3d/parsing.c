@@ -1,4 +1,5 @@
 #include "file.h"
+
 void get_x_y_of_the_player(t_all **all)
 {
     char c;
@@ -33,6 +34,7 @@ void get_x_y_of_the_player(t_all **all)
          (*all)->x++;
     }
 }
+
 int count_pinters(char **str)
 {
     int i;
@@ -43,11 +45,13 @@ int count_pinters(char **str)
         i++;
     return(i);
 }
+
 int all_in_one(t_all **all, t_textr **txtr,  char **argv)
 {
     (*all) = malloc(sizeof(t_all));
     (*txtr) = malloc(sizeof(t_textr));
     (*all)->fd = open(argv[1], O_RDONLY);
+    (*all)->txt = (*txtr);
     if((*all)->fd == -1)
     {
         perror("file error\n");
@@ -68,6 +72,7 @@ int all_in_one(t_all **all, t_textr **txtr,  char **argv)
     get_x_y_of_the_player((all));
     return(0);
 }
+
 void init_txters(t_textr **txtr, t_all *all)
 {
     int i;

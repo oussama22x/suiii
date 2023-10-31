@@ -64,7 +64,7 @@ void draw_line(t_data *data, double x_intercept, double y_intercept)
         if(x < 0 || y < 0 || x >= 1300 || y >= 900)
             break;
          dst = data->addr + ((int)(y)  * data->line_length + ((int)x) * (data->bits_per_pixel / 8));
-             *(unsigned int *)dst = 0x000000;
+             *(unsigned int *)dst = 0x0000FF;
         x += xIncrement;
         y += yIncrement;
     }
@@ -218,8 +218,7 @@ void draw_wall(t_data *data)
     int y_start;
     int x_srart = 0;
     char *dst;
-    printf("y_srart = %d\n", y_start);
-    printf("wall_height = %f\n", data->wall_height);
+
    while(x_srart < 1300)
    {
     data->dist_proj_plane = (900 / 2) / tan(data->fov / 2);
@@ -232,12 +231,14 @@ void draw_wall(t_data *data)
        while(y_start < (900 / 2) + (data->wall_height / 2))
        {
             dst = data->addr + (y_start * data->line_length + x_srart * (data->bits_per_pixel / 8));
-            *(unsigned int *)dst = 0x00FF00;
+            *(unsigned int *)dst = 0xFFFFFF;
             y_start++;
        }
        x_srart++;
    }
 }
+
+
 void draw_map(t_data *data)
 {
     int x = 0;
@@ -245,6 +246,11 @@ void draw_map(t_data *data)
     char *dst;
     int y = 0;
     int t = 0;
+    unsigned int sky;
+    unsigned int gorund;
+
+    sky = data->all->txt->F_CLOR;
+    gorund = data->all->txt->C_CLOR;
     data->fov = 60 * (M_PI / 180);
     data->ray_angle = data->direction - (data->fov / 2);
      data->all_rays = malloc(sizeof(double) * 1300);
@@ -252,10 +258,12 @@ void draw_map(t_data *data)
     {
         char *dst;
         dst = data->addr + (t * (data->bits_per_pixel / 8));
-            *(unsigned int *)dst = 0x000000;
+        if(t < 450 * 1300)
+            *(unsigned int *)dst = sky;
+        else
+            *(unsigned int *)dst = gorund;
             t++;
     }
-
     while(i < 1300)
     {
     if(data->ray_angle > 2 * M_PI)
@@ -273,7 +281,7 @@ void draw_map(t_data *data)
        x = 0;
        while(x < data->all->longest_line)
        {
-           color = (data->all->map[y][x] == '1') ? 0x00FF0F : 0xFFFFFF;
+           color = (data->all->map[y][x] == '1') ? 0x000000 : 0xFFFFFF;
            my_mlx_pixel_put(data, x, y, color);
            x++;
        }

@@ -38,6 +38,7 @@ typedef struct s_all
     int x_of_map;
     int y_of_map;
     int longest_line;
+    t_textr *txt;
 } t_all;
 void get_map(t_all **all, int fd);
 int check_errors(char **map);
